@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <style>
+    .error-page {
+      max-width: 480px;
+      margin: 120px auto;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .error-code {
+      font-family: 'Syne', sans-serif;
+      font-size: 80px;
+      font-weight: 800;
+      color: var(--pale-sage);
+      letter-spacing: -4px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .error-message {
+      font-size: 18px;
+      color: var(--dark-text);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .error-sub {
+      font-size: 15px;
+      color: var(--muted-text);
+      margin-bottom: 32px;
+    }
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--deep-sage);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 100px;
+      transition: background 0.2s ease;
+    }
+    .btn-home:hover { background: #2d4535; }
+  </style>
+</head>
+<body>
+  <%- include('partials/nav') %>
+  <div class="error-page">
+    <div class="error-code">!</div>
+    <div class="error-message"><%= typeof message !== 'undefined' ? message : 'Something went wrong.' %></div>
+    <div class="error-sub">This wasn't supposed to happen.</div>
+    <a href="/learn" class="btn-home">Back to course</a>
+  </div>
+</body>
+</html>

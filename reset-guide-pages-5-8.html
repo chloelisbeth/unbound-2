@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Text-Back Reset · Pages 5–8</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sage: #3D5A47;
+      --sage-light: #EBF0EC;
+      --sage-mid: #D8E3DC;
+      --terracotta: #C4856A;
+      --terracotta-light: #F5EDE8;
+      --text-dark: #1A2B21;
+      --text-mid: #4A5E52;
+      --text-muted: #6B7C73;
+      --white: #FFFFFF;
+      --page-w: 816px;   /* 8.5in at 96dpi */
+      --page-h: 1056px;  /* 11in at 96dpi */
+      --margin: 56px;
+    }
+
+    body {
+      background: #E8EBE9;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-dark);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ─── PAGE SHELL ─── */
+    .page {
+      width: var(--page-w);
+      min-height: var(--page-h);
+      background: var(--white);
+      margin: 32px auto;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-inner {
+      padding: var(--margin);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── HEADER BAND ─── */
+    .page-header {
+      background: var(--sage);
+      padding: 18px var(--margin) 14px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .page-header .brand {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--white);
+      text-transform: uppercase;
+    }
+    .page-header .page-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: var(--terracotta);
+      text-transform: uppercase;
+    }
+
+    /* ─── FOOTER ─── */
+    .page-footer {
+      padding: 10px var(--margin) 12px;
+      border-top: 1px solid var(--sage-mid);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .page-footer span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 8px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    /* ─── TYPOGRAPHY ─── */
+    .page-title {
+      font-family: 'Lora', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--sage);
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .page-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 28px;
+    }
+    .section-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: 'Lora', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--sage);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .body-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-mid);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+    em.inline {
+      font-family: 'Lora', serif;
+      font-style: italic;
+    }
+
+    /* ─── CALLOUT BOX ─── */
+    .callout {
+      background: var(--terracotta-light);
+      border-left: 3px solid var(--terracotta);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* ─── SAGE CALLOUT (variant) ─── */
+    .callout-sage {
+      background: var(--sage-light);
+      border-left: 3px solid var(--sage);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout-sage p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* ─── PAGE 5 · REFRAME GRID ─── */
+    .reframe-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+      flex: 1;
+      align-content: start;
+    }
+    .reframe-card {
+      border: 1.5px solid var(--sage-mid);
+      border-radius: 6px;
+      padding: 18px 16px;
+      background: var(--white);
+      position: relative;
+      min-height: 108px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .reframe-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--sage);
+      border-radius: 4px 4px 0 0;
+    }
+    .reframe-card:nth-child(3n+2)::before {
+      background: var(--terracotta);
+    }
+    .reframe-card:nth-child(3n+3) {
+      background: var(--sage-light);
+    }
+    .reframe-card:nth-child(3n+3)::before {
+      background: var(--sage);
+    }
+    .reframe-card p {
+      font-family: 'Lora', serif;
+      font-size: 12.5px;
+      font-style: italic;
+      color: var(--text-dark);
+      line-height: 1.55;
+      text-align: center;
+    }
+    .reframe-number {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    /* ─── PAGE 6 · PAUSE SECTION ─── */
+    .pause-intro {
+      background: var(--terracotta-light);
+      border: 1.5px solid var(--terracotta);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+    .pause-intro h2 {
+      font-family: 'Lora', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--sage);
+      margin-bottom: 10px;
+    }
+    .pause-list {
+      list-style: none;
+      padding: 0;
+    }
+    .pause-list li {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-mid);
+      line-height: 1.6;
+      padding: 3px 0 3px 16px;
+      position: relative;
+    }
+    .pause-list li::before {
+      content: '·';
+      position: absolute;
+      left: 4px;
+      color: var(--terracotta);
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+    .two-col-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .col-header {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    .col-header-terracotta {
+      background: var(--terracotta);
+      color: var(--white);
+    }
+    .col-header-sage {
+      background: var(--sage);
+      color: var(--white);
+    }
+
+    .example-bad {
+      background: var(--terracotta-light);
+      border: 1px solid #E0B5A2;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10.5px;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+    .example-good {
+      background: var(--sage-light);
+      border: 1px solid var(--sage-mid);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10.5px;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+    .example-label {
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .label-instead { color: var(--terracotta); }
+    .label-try { color: var(--sage); }
+
+    .better-options-header {
+      background: var(--sage);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    /* ─── PAGE 7 · MICRO-REWIRING ─── */
+    .rewiring-intro {
+      margin-bottom: 20px;
+    }
+    .rewiring-intro p {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text-mid);
+      line-height: 1.65;
+      margin-bottom: 6px;
+    }
+
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+    .bullet-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--sage-light);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-mid);
+      line-height: 1.5;
+    }
+    .bullet-list li:last-child { border-bottom: none; }
+    .bullet-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    .brain-learns {
+      background: var(--sage-light);
+      border: 1.5px solid var(--sage-mid);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+    .brain-learns p {
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--sage);
+      line-height: 1.55;
+    }
+
+    .challenge-box {
+      border: 2px solid var(--terracotta);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: auto;
+    }
+    .challenge-header {
+      background: var(--terracotta);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .challenge-header h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+    .challenge-body {
+      background: var(--terracotta-light);
+      padding: 18px 20px;
+    }
+    .challenge-body p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11.5px;
+      color: var(--text-dark);
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+    .challenge-body p:last-child { margin-bottom: 0; }
+    .challenge-emphasis {
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      font-style: italic;
+      color: var(--sage);
+      display: block;
+      margin-top: 10px;
+    }
+
+    /* ─── PAGE 8 · CLOSING ─── */
+    .closing-intro {
+      margin-bottom: 24px;
+    }
+    .closing-intro p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .permission-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .permission-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--sage-light);
+      border: 1px solid var(--sage-mid);
+      border-radius: 6px;
+      padding: 13px 14px;
+    }
+    .permission-icon {
+      width: 20px;
+      height: 20px;
+      background: var(--sage);
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .permission-icon::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-right: 1.5px solid var(--white);
+      border-bottom: 1.5px solid var(--white);
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+    .permission-item p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    .closing-statement {
+      background: var(--sage);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+    .closing-statement p {
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.65;
+    }
+
+    .closing-cta {
+      text-align: center;
+    }
+    .closing-cta p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .closing-cta a {
+      color: var(--terracotta);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .closing-cta strong {
+      color: var(--sage);
+    }
+    .divider-terracotta {
+      width: 40px;
+      height: 2px;
+      background: var(--terracotta);
+      margin: 18px auto;
+      border-radius: 2px;
+    }
+
+    /* ─── PRINT ─── */
+    @media print {
+      body { background: none; }
+      .page {
+        margin: 0;
+        width: 100%;
+        min-height: 100vh;
+        page-break-after: always;
+        break-after: page;
+      }
+      .page:last-child { page-break-after: avoid; break-after: avoid; }
+    }
+
+    @page {
+      size: letter;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PAGE 5 · NERVOUS SYSTEM REFRAMES                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">Unbound</span>
+    <span class="page-label">The Text-Back Reset · Page 5 of 8</span>
+  </div>
+
+  <div class="page-inner">
+    <div class="page-subtitle">Nervous System Reframes</div>
+    <h1 class="page-title">Read This When Your Brain<br>Starts Spiraling</h1>
+
+    <div class="callout" style="margin-bottom: 22px;">
+      <p>These aren't affirmations. They're corrections — facts your nervous system forgets when anxiety takes over. Read one slowly. Breathe. Let it land before you act.</p>
+    </div>
+
+    <div class="reframe-grid">
+
+      <div class="reframe-card">
+        <div class="reframe-number">01</div>
+        <p>Silence is not automatic rejection.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">02</div>
+        <p>Delayed responses are a normal part of life.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">03</div>
+        <p>Anxiety fills gaps with fear — not with facts.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">04</div>
+        <p>You do not need to earn connection through hypervigilance.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">05</div>
+        <p>You are allowed to exist without constant reassurance.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">06</div>
+        <p>Someone else's availability is not a measure of your worth.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">07</div>
+        <p>You can survive uncertainty without chasing relief.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">08</div>
+        <p>Not every uncomfortable feeling requires immediate action.</p>
+      </div>
+
+      <div class="reframe-card">
+        <div class="reframe-number">09</div>
+        <p>You are allowed to pause before reacting.</p>
+      </div>
+
+    </div>
+
+    <div class="callout-sage">
+      <p><strong>Save this page.</strong> Screenshot it. Put it somewhere you'll see it when the loop fires — before you reach for the phone.</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Unbound · The Text-Back Reset</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PAGE 6 · BEFORE YOU SEND ANOTHER TEXT                         -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">Unbound</span>
+    <span class="page-label">The Text-Back Reset · Page 6 of 8</span>
+  </div>
+
+  <div class="page-inner">
+    <div class="page-subtitle">The Pause Check</div>
+    <h1 class="page-title" style="margin-bottom: 18px;">Before You Send Another Text…</h1>
+
+    <div class="pause-intro">
+      <h2>Pause if your message is trying to:</h2>
+      <ul class="pause-list">
+        <li>force reassurance,</li>
+        <li>reduce your own panic,</li>
+        <li>test whether they care,</li>
+        <li>get immediate emotional regulation,</li>
+        <li>prevent abandonment,</li>
+        <li>or undo imagined rejection.</li>
+      </ul>
+    </div>
+
+    <div class="section-label">Examples vs. Better Options</div>
+    <p class="body-text" style="margin-bottom: 14px;">These messages usually come from <em class="inline">activation</em> — not clarity. Here's what to try instead.</p>
+
+    <div class="two-col">
+      <div class="two-col-col">
+        <div class="col-header col-header-terracotta">Messages From Activation</div>
+
+        <div class="example-bad">
+          <span class="example-label label-instead">Instead of:</span>
+          "Are you mad at me?"<br>"Sorry if I was annoying."<br>"Did I do something wrong?"
+        </div>
+
+        <div class="example-bad">
+          <span class="example-label label-instead">Instead of:</span>
+          "???"&nbsp;&nbsp;·&nbsp;&nbsp;"Never mind lol"<br>Long panic paragraphs<br>Repeated follow-ups
+        </div>
+
+        <div class="example-bad">
+          <span class="example-label label-instead">Instead of:</span>
+          Sending another text immediately after no reply
+        </div>
+      </div>
+
+      <div class="two-col-col">
+        <div class="col-header col-header-sage">Responses From Clarity</div>
+
+        <div class="example-good">
+          <span class="example-label label-try">Try instead:</span>
+          "I noticed I'm feeling anxious and making assumptions. I'm going to give this space before reacting."
+        </div>
+
+        <div class="example-good">
+          <span class="example-label label-try">Try instead:</span>
+          Say nothing. Name the feeling internally. Notice it without feeding it.
+        </div>
+
+        <div class="example-good">
+          <span class="example-label label-try">Try instead:</span>
+          Tolerate 10 more minutes of uncertainty first. That's how rewiring happens.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: auto;">
+      <p>The goal isn't to suppress how you feel. It's to create a gap between the feeling and the action. That gap is where you get to choose.</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Unbound · The Text-Back Reset</span>
+    <span>Page 6</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PAGE 7 · MICRO-REWIRING                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">Unbound</span>
+    <span class="page-label">The Text-Back Reset · Page 7 of 8</span>
+  </div>
+
+  <div class="page-inner">
+    <div class="page-subtitle">The Long Game</div>
+    <h1 class="page-title" style="margin-bottom: 18px;">Micro-Rewiring</h1>
+
+    <div class="rewiring-intro">
+      <p>Healing codependent patterns is often less about huge breakthroughs…</p>
+      <p>…and more about tiny interrupted reactions, repeated consistently.</p>
+    </div>
+
+    <div class="section-label">Every time you do one of these things</div>
+    <ul class="bullet-list">
+      <li>
+        <div class="bullet-dot"></div>
+        <span>wait before reacting,</span>
+      </li>
+      <li>
+        <div class="bullet-dot"></div>
+        <span>tolerate uncertainty without seeking immediate relief,</span>
+      </li>
+      <li>
+        <div class="bullet-dot"></div>
+        <span>stop yourself from over-explaining,</span>
+      </li>
+      <li>
+        <div class="bullet-dot"></div>
+        <span>resist compulsive checking,</span>
+      </li>
+      <li>
+        <div class="bullet-dot"></div>
+        <span>or regulate your nervous system before reaching outward…</span>
+      </li>
+    </ul>
+
+    <div class="brain-learns">
+      <p>"I can feel anxious without abandoning myself."</p>
+      <p style="font-size: 11px; font-style: normal; font-family: 'DM Sans', sans-serif; color: var(--text-muted); margin-top: 8px;">That is nervous system rewiring.</p>
+    </div>
+
+    <div class="challenge-box">
+      <div class="challenge-header">
+        <h3>Today's Challenge</h3>
+      </div>
+      <div class="challenge-body">
+        <p>The next time you feel the urge to double text, seek reassurance, or monitor someone emotionally —</p>
+        <p><strong>wait 10 minutes first.</strong></p>
+        <p>Just 10 minutes. That's the whole challenge.</p>
+        <span class="challenge-emphasis">
+          This is not about being cold or emotionless.<br>
+          It's simply to create space between feeling and reaction.<br>
+          That space is where change begins.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Unbound · The Text-Back Reset</span>
+    <span>Page 7</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PAGE 8 · CLOSING — YOU DO NOT NEED TO PANIC                   -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">Unbound</span>
+    <span class="page-label">The Text-Back Reset · Page 8 of 8</span>
+  </div>
+
+  <div class="page-inner">
+    <div class="page-subtitle">A Closing Note</div>
+    <h1 class="page-title" style="margin-bottom: 18px;">You Do Not Need to Panic to Stay Connected</h1>
+
+    <div class="closing-intro">
+      <p>Your nervous system may have learned that closeness requires monitoring, anticipating, overthinking, pleasing, or chasing reassurance.</p>
+      <p style="margin-top: 10px;">But healthy connection does not require self-abandonment.</p>
+    </div>
+
+    <div class="section-label" style="margin-bottom: 12px;">You are allowed to</div>
+    <ul class="permission-list">
+      <li class="permission-item">
+        <div class="permission-icon"></div>
+        <p>pause before responding, even when anxiety says urgency is required</p>
+      </li>
+      <li class="permission-item">
+        <div class="permission-icon"></div>
+        <p>breathe and regulate before you reach outward</p>
+      </li>
+      <li class="permission-item">
+        <div class="permission-icon"></div>
+        <p>tolerate uncertainty without it meaning something is wrong</p>
+      </li>
+      <li class="permission-item">
+        <div class="permission-icon"></div>
+        <p>respond intentionally instead of urgently</p>
+      </li>
+    </ul>
+
+    <div class="closing-statement">
+      <p>That's emotional safety.<br>Not coldness. Not distance.<br>Just the ability to be with yourself while you're with someone else.</p>
+    </div>
+
+    <div class="divider-terracotta"></div>
+
+    <div class="closing-cta">
+      <p><strong>Before you go</strong> — the patterns that drove you here didn't appear overnight. They won't dissolve after one reset. But every time you use this guide, you're practicing something different.</p>
+      <p style="margin-top: 10px;">That practice compounds.</p>
+      <p style="margin-top: 14px; font-size: 10.5px; color: var(--text-muted);">Continue the work at <a href="https://unboundcourse.com">unboundcourse.com</a></p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Unbound · The Text-Back Reset</span>
+    <span>Page 8</span>
+  </div>
+</div>
+
+</body>
+</html>

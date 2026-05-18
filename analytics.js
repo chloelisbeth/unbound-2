@@ -1,165 +1,109 @@
 /**
- * db/analytics.js
- * Owns: page_views and conversion_events tables
- * Does NOT own: HTTP responses, session management (those live at the routes layer)
+ * routes/analytics.js
+ * Owns: GET /api/analytics/summary — aggregated metrics for internal use
+ *       GET /api/track/checkout — redirect to Stripe after logging stripe_checkout_click event
+ * Does NOT own: data collection (middleware handles page views; conversion events come from routes)
  */
 
-let pool;
+const { Router } = require('express');
+const analyticsDb = require('../db/analytics');
+const { trackConversion } = require('../lib/track');
 
-// Set by db/index.js on boot
-function setPool(p) {
-  pool = p;
-}
+const router = Router();
 
-// ── Page Views ────────────────────────────────────────────────────────────────
+// GET /api/track/checkout?tier=full — log stripe_checkout_click, redirect to Stripe
+// Buttons in pricing.ejs and reset.ejs use this so we can track checkout intent server-side.
+router.get('/checkout', (req, res) => {
+  const { url } = req.query;
+  if (!url || !url.startsWith('https://buy.stripe.com')) {
+    return res.redirect('/pricing');
+  }
 
-// Record a single page view. Idempotent per call — no conflict handling needed.
-async function recordPageView({ sessionId, path, referrer, utmSource, utmMedium, utmCampaign, userAgent }) {
-  await pool.query(
-    `INSERT INTO page_views (session_id, path, referrer, utm_source, utm_medium, utm_campaign, user_agent)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [sessionId, path, referrer || null, utmSource || null, utmMedium || null, utmCampaign || null, userAgent || null]
-  );
-}
+  trackConversion(req, 'stripe_checkout_click', { tier: req.query.tier || null });
+  res.redirect(url);
+});
 
-// ── Conversion Events ──────────────────────────────────────────────────────────
+// GET /api/analytics/summary?period=7d
+// Returns page views by path, unique sessions/day, conversion funnel, and referrer breakdown.
+// No auth — keep this internal-only (not exposed on public-facing routes).
+router.get('/summary', async (req, res) => {
+  const period = req.query.period || '7d';
+  let hours;
+  switch (period) {
+    case '24h': hours = 24; break;
+    case '7d':  hours = 24 * 7; break;
+    case '30d': hours = 24 * 30; break;
+    default:    hours = 24 * 7;
+  }
 
-// Record a conversion event. Idempotent — first occurrence per session/event_type only.
-// Subsequent calls with the same session_id + event_type are silently ignored.
-async function recordConversionEvent({ sessionId, eventType, metadata }) {
-  await pool.query(
-    `INSERT INTO conversion_events (session_id, event_type, metadata)
-     VALUES ($1, $2, $3)
-     ON CONFLICT DO NOTHING`,
-    [sessionId, eventType, metadata ? JSON.stringify(metadata) : null]
-  );
-}
+  try {
+    const [
+      totalPageViews,
+      totalUniqueSessions,
+      pageViewsByPath,
+      sessionsPerDay,
+      conversionEventCounts,
+      totalConversions,
+      referrerBreakdown,
+      utmBreakdown,
+    ] = await Promise.all([
+      analyticsDb.getTotalPageViews(hours),
+      analyticsDb.getTotalUniqueSessions(hours),
+      analyticsDb.getPageViewsByPathAll(hours),
+      analyticsDb.getUniqueSessionsPerDay(hours),
+      analyticsDb.getConversionEventCounts(hours),
+      analyticsDb.getTotalConversionEvents(hours),
+      analyticsDb.getReferrerBreakdown(hours, 10),
+      analyticsDb.getUtmBreakdown(hours, 10),
+    ]);
 
-// ── Analytics Queries ─────────────────────────────────────────────────────────
+    // Conversion funnel — in strict order so we can calc drop-off.
+    // Order matters: the funnel analysis assumes this ordering.
+    const FUNNEL_ORDER = [
+      'landing_view',
+      'module1_start',
+      'pricing_view',
+      'stripe_checkout_click',
+      'email_signup',
+      'reset_view',
+      'reset_purchase',
+    ];
 
-// Page views for a specific path within a time window (hours)
-async function getPageViewsByPath(path, hoursAgo) {
-  const result = await pool.query(
-    `SELECT COUNT(*)::int AS count
-     FROM page_views
-     WHERE path = $1 AND created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'`,
-    [path]
-  );
-  return result.rows[0].count;
-}
+    // Build funnel with counts from event counts map
+    const eventCountMap = {};
+    for (const row of conversionEventCounts) {
+      eventCountMap[row.event_type] = row.count;
+    }
 
-// Page views broken down by path within a time window
-async function getPageViewsByPathAll(hoursAgo) {
-  const result = await pool.query(
-    `SELECT path, COUNT(*)::int AS views, COUNT(DISTINCT session_id)::int AS unique_sessions
-     FROM page_views
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'
-     GROUP BY path
-     ORDER BY views DESC`
-  );
-  return result.rows;
-}
+    const funnel = FUNNEL_ORDER.map((eventType, index) => {
+      const count = eventCountMap[eventType] || 0;
+      const prevCount = index > 0 ? (eventCountMap[FUNNEL_ORDER[index - 1]] || 0) : count;
+      const dropOff = prevCount > 0 ? Math.round(((prevCount - count) / prevCount) * 100) : null;
+      return {
+        event_type: eventType,
+        count,
+        drop_off_pct: dropOff,
+      };
+    });
 
-// Unique sessions per day within a time window
-async function getUniqueSessionsPerDay(hoursAgo) {
-  const result = await pool.query(
-    `SELECT DATE(created_at) AS date, COUNT(DISTINCT session_id)::int AS unique_sessions
-     FROM page_views
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'
-     GROUP BY DATE(created_at)
-     ORDER BY date ASC`
-  );
-  return result.rows;
-}
+    // Top paths (limit to 15 for readability)
+    const topPaths = pageViewsByPath.slice(0, 15);
 
-// Total page views within a time window
-async function getTotalPageViews(hoursAgo) {
-  const result = await pool.query(
-    `SELECT COUNT(*)::int AS count
-     FROM page_views
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'`
-  );
-  return result.rows[0].count;
-}
+    res.json({
+      period,
+      total_page_views: totalPageViews,
+      total_unique_sessions: totalUniqueSessions,
+      total_conversion_events: totalConversions,
+      top_paths: topPaths,
+      sessions_per_day: sessionsPerDay,
+      conversion_funnel: funnel,
+      referrer_breakdown: referrerBreakdown,
+      utm_breakdown: utmBreakdown,
+    });
+  } catch (err) {
+    console.error('/api/analytics/summary error:', err);
+    res.status(500).json({ error: 'Failed to load analytics' });
+  }
+});
 
-// Total unique sessions within a time window
-async function getTotalUniqueSessions(hoursAgo) {
-  const result = await pool.query(
-    `SELECT COUNT(DISTINCT session_id)::int AS count
-     FROM page_views
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'`
-  );
-  return result.rows[0].count;
-}
-
-// Conversion event counts by type within a time window
-async function getConversionEventCounts(hoursAgo) {
-  const result = await pool.query(
-    `SELECT event_type, COUNT(*)::int AS count
-     FROM conversion_events
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'
-     GROUP BY event_type
-     ORDER BY count DESC`
-  );
-  return result.rows;
-}
-
-// Total conversion events within a time window
-async function getTotalConversionEvents(hoursAgo) {
-  const result = await pool.query(
-    `SELECT COUNT(*)::int AS count
-     FROM conversion_events
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'`
-  );
-  return result.rows[0].count;
-}
-
-// Referrer breakdown (top referrers by session count)
-async function getReferrerBreakdown(hoursAgo, limit = 10) {
-  const result = await pool.query(
-    `SELECT COALESCE(NULLIF(referrer, ''), 'direct') AS referrer,
-            COUNT(*)::int AS views,
-            COUNT(DISTINCT session_id)::int AS unique_sessions
-     FROM page_views
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'
-     GROUP BY referrer
-     ORDER BY unique_sessions DESC
-     LIMIT $1`,
-    [limit]
-  );
-  return result.rows;
-}
-
-// UTM source breakdown
-async function getUtmBreakdown(hoursAgo, limit = 10) {
-  const result = await pool.query(
-    `SELECT COALESCE(NULLIF(utm_source, ''), 'none') AS utm_source,
-            COALESCE(NULLIF(utm_medium, ''), 'none') AS utm_medium,
-            COALESCE(NULLIF(utm_campaign, ''), 'none') AS utm_campaign,
-            COUNT(DISTINCT session_id)::int AS sessions,
-            COUNT(*)::int AS page_views
-     FROM page_views
-     WHERE created_at > NOW() - INTERVAL '${parseInt(hoursAgo)} hours'
-       AND utm_source IS NOT NULL
-     GROUP BY utm_source, utm_medium, utm_campaign
-     ORDER BY sessions DESC
-     LIMIT $1`,
-    [limit]
-  );
-  return result.rows;
-}
-
-module.exports = {
-  setPool,
-  recordPageView,
-  recordConversionEvent,
-  getPageViewsByPath,
-  getPageViewsByPathAll,
-  getUniqueSessionsPerDay,
-  getTotalPageViews,
-  getTotalUniqueSessions,
-  getConversionEventCounts,
-  getTotalConversionEvents,
-  getReferrerBreakdown,
-  getUtmBreakdown,
-};
+module.exports = router;

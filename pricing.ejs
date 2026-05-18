@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <%- metaPixelSnippet %>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --warm-cream: #FAF7F2;
+      --deep-sage: #3D5A47;
+      --light-sage: #7A9E87;
+      --soft-terracotta: #C4856A;
+      --dark-text: #1A1A1A;
+      --muted-text: #6B6B6B;
+      --pale-sage: #E8F0EA;
+      --warm-blush: #F2E6DF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--warm-cream);
+      color: var(--dark-text);
+      line-height: 1.7;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Nav */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-family: 'Lora', serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--deep-sage);
+      letter-spacing: -0.5px;
+    }
+    .nav-tag {
+      font-size: 13px;
+      color: var(--light-sage);
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .nav-cta {
+      background: var(--deep-sage);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 10px 22px;
+      border-radius: 100px;
+      transition: background 0.2s ease;
+    }
+    .nav-cta:hover { background: #2d4535; }
+
+    /* Page header */
+    .page-header {
+      max-width: 640px;
+      margin: 64px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .page-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--soft-terracotta);
+      margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-family: 'Lora', serif;
+      font-weight: 800;
+      font-size: clamp(32px, 5vw, 52px);
+      color: var(--deep-sage);
+      line-height: 1.1;
+      letter-spacing: -1.2px;
+      margin-bottom: 20px;
+    }
+    .page-header p {
+      font-size: 17px;
+      color: var(--muted-text);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Error banner */
+    .error-banner {
+      max-width: 640px;
+      margin: 24px auto 0;
+      padding: 14px 20px;
+      background: #FFF0ED;
+      border: 1px solid rgba(196, 133, 106, 0.4);
+      border-radius: 10px;
+      font-size: 14px;
+      color: #8B4513;
+      text-align: center;
+    }
+
+    /* Pricing grid */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 980px;
+      margin: 64px auto 80px;
+      padding: 0 24px;
+    }
+
+    .pricing-card {
+      background: white;
+      border: 1px solid rgba(61, 90, 71, 0.1);
+      border-radius: 20px;
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .pricing-card.featured {
+      border-color: var(--deep-sage);
+      box-shadow: 0 8px 48px rgba(61, 90, 71, 0.12);
+    }
+    .featured-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--deep-sage);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .card-tier {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--soft-terracotta);
+      margin-bottom: 12px;
+    }
+    .card-name {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--deep-sage);
+      margin-bottom: 8px;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: var(--muted-text);
+      margin-bottom: 28px;
+      line-height: 1.55;
+      flex-grow: 1;
+    }
+
+    .card-price {
+      margin-bottom: 28px;
+    }
+    .price-amount {
+      font-family: 'Lora', serif;
+      font-weight: 800;
+      font-size: 40px;
+      color: var(--deep-sage);
+      letter-spacing: -1px;
+    }
+    .price-label {
+      font-size: 13px;
+      color: var(--muted-text);
+      margin-top: 4px;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--dark-text);
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(61, 90, 71, 0.07);
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-list .check {
+      color: var(--deep-sage);
+      font-size: 16px;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }
+    .feature-list .muted-feature {
+      color: var(--muted-text);
+    }
+
+    .card-btn {
+      display: block;
+      text-align: center;
+      padding: 14px 24px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      transition: background 0.2s ease, transform 0.15s ease;
+      margin-top: auto;
+    }
+    .card-btn-primary {
+      background: var(--deep-sage);
+      color: white;
+    }
+    .card-btn-primary:hover { background: #2d4535; transform: translateY(-1px); }
+    .card-btn-secondary {
+      background: transparent;
+      color: var(--deep-sage);
+      border: 1.5px solid var(--deep-sage);
+    }
+    .card-btn-secondary:hover { background: var(--pale-sage); }
+    .card-btn-free {
+      background: var(--pale-sage);
+      color: var(--deep-sage);
+    }
+    .card-btn-free:hover { background: #d8eadb; }
+
+    /* Compare note */
+    .compare-note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted-text);
+      margin: -48px auto 64px;
+      padding: 0 24px;
+    }
+
+    /* Bonus section */
+    .bonus-section {
+      max-width: 980px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .bonus-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .bonus-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--soft-terracotta);
+      margin-bottom: 10px;
+    }
+    .bonus-title {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--deep-sage);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .bonus-sub {
+      font-size: 15px;
+      color: var(--muted-text);
+    }
+    .bonus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+    }
+    .bonus-card {
+      background: white;
+      border: 1px solid rgba(61, 90, 71, 0.1);
+      border-radius: 14px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .bonus-card.highlight {
+      border-color: var(--soft-terracotta);
+      background: var(--warm-blush);
+    }
+    .bonus-card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--pale-sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 17px;
+    }
+    .bonus-card.highlight .bonus-card-icon {
+      background: rgba(196, 133, 106, 0.2);
+    }
+    .bonus-card-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--soft-terracotta);
+      margin-bottom: 3px;
+    }
+    .bonus-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--deep-sage);
+      margin-bottom: 3px;
+    }
+    .bonus-card-desc {
+      font-size: 12.5px;
+      color: var(--muted-text);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(61, 90, 71, 0.1);
+      padding: 32px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'Lora', serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--deep-sage);
+    }
+    .footer-note {
+      font-size: 13px;
+      color: var(--muted-text);
+    }
+
+    /* Launch banner */
+    .launch-banner {
+      max-width: 720px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+    }
+    .launch-banner-inner {
+      background: var(--warm-blush);
+      border: 1px solid rgba(196, 133, 106, 0.35);
+      border-radius: 14px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .launch-banner-text {
+      font-size: 15px;
+      color: var(--dark-text);
+      line-height: 1.5;
+    }
+    .launch-banner-text strong {
+      color: var(--deep-sage);
+    }
+    .launch-countdown {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted-text);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .countdown-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--soft-terracotta);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    #countdown-display {
+      font-variant-numeric: tabular-nums;
+      color: var(--soft-terracotta);
+      font-weight: 600;
+    }
+
+    /* Restore purchase section */
+    .restore-section {
+      max-width: 640px;
+      margin: -32px auto 72px;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .restore-link-line {
+      font-size: 13px;
+      color: var(--muted-text);
+    }
+    .restore-link-line a {
+      color: var(--soft-terracotta);
+      border-bottom: 1px solid rgba(196, 133, 106, 0.3);
+      transition: border-color 0.2s ease;
+    }
+    .restore-link-line a:hover { border-color: var(--soft-terracotta); }
+
+    .restore-card {
+      background: white;
+      border: 1px solid rgba(61, 90, 71, 0.1);
+      border-radius: 16px;
+      padding: 32px 28px;
+      text-align: left;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .restore-title {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--deep-sage);
+      margin-bottom: 8px;
+    }
+    .restore-sub {
+      font-size: 14px;
+      color: var(--muted-text);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+    .restore-error {
+      background: #FFF0ED;
+      border: 1px solid rgba(196, 133, 106, 0.35);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      color: #8B4513;
+      margin-bottom: 16px;
+    }
+    .restore-error a { color: #8B4513; text-decoration: underline; }
+    .restore-form {
+      display: flex;
+      gap: 10px;
+    }
+    .restore-input {
+      flex: 1;
+      padding: 11px 16px;
+      border: 1.5px solid rgba(61, 90, 71, 0.2);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--dark-text);
+      background: var(--warm-cream);
+      outline: none;
+      min-width: 0;
+    }
+    .restore-input:focus { border-color: var(--deep-sage); }
+    .restore-input::placeholder { color: #aaa; }
+    .restore-btn {
+      padding: 11px 22px;
+      background: var(--deep-sage);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+      flex-shrink: 0;
+    }
+    .restore-btn:hover { background: #2d4535; }
+
+    /* 5-Minute Reset guide entry-level card */
+    .pricing-reset-card {
+      background: var(--warm-blush);
+      border: 1.5px solid rgba(196, 133, 106, 0.3);
+      border-radius: 20px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .reset-card-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(196, 133, 106, 0.15);
+      color: var(--soft-terracotta);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(196, 133, 106, 0.28);
+      margin-bottom: 16px;
+      align-self: center;
+    }
+    .reset-card-title {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--deep-sage);
+      margin-bottom: 8px;
+    }
+    .reset-card-desc {
+      font-size: 14px;
+      color: var(--muted-text);
+      line-height: 1.55;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+    .reset-card-price {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .reset-card-amount {
+      font-family: 'Lora', serif;
+      font-weight: 800;
+      font-size: 32px;
+      color: var(--deep-sage);
+      letter-spacing: -0.8px;
+    }
+    .reset-card-label {
+      font-size: 12px;
+      color: var(--muted-text);
+    }
+    .reset-card-whats-inside {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .reset-card-whats-inside li {
+      font-size: 12.5px;
+      color: var(--dark-text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .reset-card-whats-inside li::before {
+      content: '→';
+      color: var(--soft-terracotta);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .card-btn-reset {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--soft-terracotta);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 13px 24px;
+      border-radius: 100px;
+      transition: background 0.2s ease, transform 0.15s ease;
+      margin-top: auto;
+    }
+    .card-btn-reset:hover { background: #b07055; transform: translateY(-1px); }
+    .reset-card-divider {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted-text);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .reset-card-divider::before,
+    .reset-card-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(61, 90, 71, 0.12);
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 20px; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+      footer { padding: 24px 20px; }
+      .restore-form { flex-direction: column; }
+      .restore-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo">Unbound</a>
+    <span class="nav-tag">A course in freedom</span>
+    <a href="/learn" class="nav-cta">Start for free</a>
+  </nav>
+
+  <% if (typeof launchActive !== 'undefined' && launchActive) { %>
+  <div class="launch-banner">
+    <div class="launch-banner-inner">
+      <div class="launch-banner-text">
+        <strong>Launch price: $97 instead of $127.</strong> A real discount for early students, not a fake countdown.
+      </div>
+      <div class="launch-countdown">
+        <span class="countdown-dot"></span>
+        <span>Ends in <span id="countdown-display">...</span></span>
+      </div>
+    </div>
+  </div>
+  <% } %>
+
+  <div class="page-header">
+    <div class="page-eyebrow">Pricing</div>
+    <h1>Start free.<br>Go deeper when ready.</h1>
+    <p>Module 1 is free, always. When you're ready to keep going, the full course is one flat purchase.</p>
+  </div>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+  <div class="error-banner">
+    There was a problem verifying your payment. Please try again or contact us if this continues.
+  </div>
+  <% } %>
+
+  <% if (typeof restoreSuccess !== 'undefined' && restoreSuccess) { %>
+  <div class="error-banner" style="background:#EEF7EE;border-color:rgba(61,90,71,0.25);color:#2e5e37;">
+    ✓ Access restored. <a href="/learn" style="color:var(--deep-sage);font-weight:600;text-decoration:underline;">Continue your course →</a>
+  </div>
+  <% } %>
+
+  <!-- 5-Minute Reset — entry-level option -->
+  <div class="pricing-reset-card">
+    <div class="reset-card-badge">Start here · $12</div>
+    <div class="reset-card-title">5-Minute Reset</div>
+    <div class="reset-card-desc">Not ready for the full course yet? Start here. The core interrupt tools, ready to use today.</div>
+    <div class="reset-card-price">
+      <span class="reset-card-amount">$12</span>
+      <span class="reset-card-label">one-time</span>
+    </div>
+    <ul class="reset-card-whats-inside">
+      <li>The 5-step reset protocol</li>
+      <li>4 pattern-specific interrupt guides</li>
+      <li>Phone screenshot cards to save</li>
+    </ul>
+    <a href="/reset" class="card-btn-reset">
+      Get the Reset →
+    </a>
+  </div>
+
+  <div class="reset-card-divider">or jump into the full course below</div>
+
+  <div class="pricing-grid">
+
+    <!-- Free tier -->
+    <div class="pricing-card">
+      <div class="card-tier">Free</div>
+      <div class="card-name">Module 1</div>
+      <div class="card-desc">The foundation. 6 lessons on recognizing codependent patterns: what they are, why they form, how they show up.</div>
+      <div class="card-price">
+        <div class="price-amount">$0</div>
+        <div class="price-label">No account required</div>
+      </div>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> Module 1: Recognizing the Pattern</li>
+        <li><span class="check">✓</span> 6 lessons (~45 min)</li>
+        <li><span class="check">✓</span> Progress saved automatically</li>
+        <li><span class="check">✓</span> The neuroscience behind the pattern</li>
+        <li><span class="muted-feature check">—</span> <span class="muted-feature">Modules 2+ (Boundaries, Identity...)</span></li>
+        <li><span class="muted-feature check">—</span> <span class="muted-feature">Community access</span></li>
+      </ul>
+      <a href="/learn" class="card-btn card-btn-free">Begin Module 1 →</a>
+    </div>
+
+    <!-- Full Course tier -->
+    <div class="pricing-card featured">
+      <div class="featured-badge"><% if (typeof launchActive !== 'undefined' && launchActive) { %>Launch offer<% } else { %>Most popular<% } %></div>
+      <div class="card-tier">Full Course</div>
+      <div class="card-name">All Modules</div>
+      <div class="card-desc">All modules, current and future. Work at your own pace, no expiry. One purchase, that's it.</div>
+      <div class="card-price">
+        <% if (typeof launchActive !== 'undefined' && launchActive && tiers.full.regularPrice) { %>
+        <div style="display:flex;align-items:baseline;gap:10px;">
+          <div class="price-amount">$<%= tiers.full.price %></div>
+          <div style="font-size:18px;color:var(--muted-text);text-decoration:line-through;font-family:'Lora',serif;font-weight:600;">$<%= tiers.full.regularPrice %></div>
+        </div>
+        <div class="price-label">Launch price · lifetime access</div>
+        <% } else { %>
+        <div class="price-amount">$<%= tiers.full.price %></div>
+        <div class="price-label">One-time · lifetime access</div>
+        <% } %>
+      </div>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> Everything in Free</li>
+        <li><span class="check">✓</span> All current modules unlocked</li>
+        <li><span class="check">✓</span> All future modules included</li>
+        <li><span class="check">✓</span> 6 printable companion worksheets</li>
+        <li><span class="check">✓</span> Bonus: Week 1 Pattern Break guide</li>
+        <li><span class="muted-feature check">—</span> <span class="muted-feature">Community access</span></li>
+      </ul>
+      <a href="/api/track/checkout?tier=full&url=<%= encodeURIComponent(tiers.full.stripeUrl) %>" class="card-btn card-btn-primary">
+        <% if (typeof launchActive !== 'undefined' && launchActive) { %>Get the full course — $97 →<% } else { %>Get the full course →<% } %>
+      </a>
+    </div>
+
+    <!-- Premium tier -->
+    <div class="pricing-card">
+      <div class="card-tier">Premium</div>
+      <div class="card-name">Full Course + Community</div>
+      <div class="card-desc">Everything in the full course, plus the Unbound community space and bonus content when it launches.</div>
+      <div class="card-price">
+        <div class="price-amount">$197</div>
+        <div class="price-label">One-time · lifetime access</div>
+      </div>
+      <ul class="feature-list">
+        <li><span class="check">✓</span> Everything in Full Course</li>
+        <li><span class="check">✓</span> 6 printable companion worksheets</li>
+        <li><span class="check">✓</span> Bonus: Week 1 Pattern Break guide</li>
+        <li><span class="check">✓</span> Community access (launching soon)</li>
+        <li><span class="check">✓</span> Early access to new material</li>
+        <li><span class="check">✓</span> Q&amp;A threads with other students</li>
+      </ul>
+      <a href="/api/track/checkout?tier=premium&url=<%= encodeURIComponent('https://buy.stripe.com/fZu00kcPMdTEetP6hg3gk01') %>" class="card-btn card-btn-secondary">Get Premium →</a>
+    </div>
+
+  </div>
+
+  <p class="compare-note">Secure checkout via Stripe. No subscription, no renewals. Access doesn't expire.</p>
+
+  <!-- What's included: worksheets and bonus — visible to all, creates purchase desire -->
+  <div class="bonus-section">
+    <div class="bonus-header">
+      <div class="bonus-eyebrow">Included with Full Course &amp; Premium</div>
+      <div class="bonus-title">More than lessons — a full toolkit.</div>
+      <div class="bonus-sub">Every paid tier comes with 6 printable worksheets and a bonus guide, built to use alongside the course.</div>
+    </div>
+    <div class="bonus-grid">
+      <div class="bonus-card">
+        <div class="bonus-card-icon">📋</div>
+        <div>
+          <div class="bonus-card-label">Worksheet 1</div>
+          <div class="bonus-card-title">Trigger Mapping</div>
+          <div class="bonus-card-desc">Map your approval-seeking patterns using a fill-in template across 6 real situations.</div>
+        </div>
+      </div>
+      <div class="bonus-card">
+        <div class="bonus-card-icon">🗂️</div>
+        <div>
+          <div class="bonus-card-label">Worksheet 2</div>
+          <div class="bonus-card-title">Personal Trigger Inventory</div>
+          <div class="bonus-card-desc">A checklist of 12 common triggers plus a journal template for your top 3.</div>
+        </div>
+      </div>
+      <div class="bonus-card">
+        <div class="bonus-card-icon">⚖️</div>
+        <div>
+          <div class="bonus-card-label">Worksheet 3</div>
+          <div class="bonus-card-title">Payoff Tracking Sheet</div>
+          <div class="bonus-card-desc">Side-by-side columns: what approval-seeking gives you short-term vs. what it costs long-term.</div>
+        </div>
+      </div>
+      <div class="bonus-card">
+        <div class="bonus-card-icon">🛑</div>
+        <div>
+          <div class="bonus-card-label">Worksheet 4</div>
+          <div class="bonus-card-title">Pattern Interrupt Card</div>
+          <div class="bonus-card-desc">Quick-reference guide for 5 common loops. Screenshot-friendly for your phone.</div>
+        </div>
+      </div>
+      <div class="bonus-card">
+        <div class="bonus-card-icon">📊</div>
+        <div>
+          <div class="bonus-card-label">Worksheet 5</div>
+          <div class="bonus-card-title">Discomfort Tolerance Tracker</div>
+          <div class="bonus-card-desc">A 7-day log for rating discomfort and tracking what you learn each time.</div>
+        </div>
+      </div>
+      <div class="bonus-card">
+        <div class="bonus-card-icon">💬</div>
+        <div>
+          <div class="bonus-card-label">Worksheet 6</div>
+          <div class="bonus-card-title">Self-Validation Scripts</div>
+          <div class="bonus-card-desc">Fill-in sentence starters and a daily check-in template for turning inward.</div>
+        </div>
+      </div>
+      <div class="bonus-card highlight">
+        <div class="bonus-card-icon">⭐</div>
+        <div>
+          <div class="bonus-card-label">Bonus Guide</div>
+          <div class="bonus-card-title">Week 1 Pattern Break</div>
+          <div class="bonus-card-desc">A day-by-day guide for your first 7 days of actually breaking the loop. Practical, specific. Written like a friend, not a checklist.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restore Purchase — shown when ?restore=1 or always as a subtle link -->
+  <div class="restore-section" id="restoreSection">
+    <% if (typeof showRestore !== 'undefined' && showRestore) { %>
+    <div class="restore-card">
+      <div class="restore-title">Restore your access</div>
+      <div class="restore-sub">Enter the email you used at checkout and we'll re-link your purchase to this browser.</div>
+      <% if (typeof restoreError !== 'undefined' && restoreError) { %>
+      <div class="restore-error">
+        <% if (restoreError === 'not_found') { %>
+          No purchase found for that email. Double-check the address or <a href="mailto:unbound@polsia.app">contact us</a>.
+        <% } else if (restoreError === 'invalid_email') { %>
+          Please enter a valid email address.
+        <% } else { %>
+          Something went wrong. Please try again.
+        <% } %>
+      </div>
+      <% } %>
+      <form class="restore-form" action="/pricing/restore" method="POST">
+        <input type="email" name="email" class="restore-input" placeholder="your@email.com" autocomplete="email" required />
+        <button type="submit" class="restore-btn">Restore access</button>
+      </form>
+    </div>
+    <% } else { %>
+    <p class="restore-link-line">Already purchased? <a href="/pricing?restore=1" id="restoreToggle">Restore your access</a></p>
+    <% } %>
+  </div>
+
+  <footer>
+    <span class="footer-logo">Unbound</span>
+    <span class="footer-note">Questions? <a href="mailto:unbound@polsia.app" style="color:var(--soft-terracotta);">unbound@polsia.app</a></span>
+  </footer>
+
+  <% if (typeof launchActive !== 'undefined' && launchActive) { %>
+  <script>
+    (function () {
+      var endDate = new Date('<%= launchEndDate %>');
+      var el = document.getElementById('countdown-display');
+      if (!el) return;
+
+      function update() {
+        var now = new Date();
+        var diff = endDate - now;
+
+        if (diff <= 0) {
+          // Window closed — hide the banner gracefully
+          var banner = el.closest('.launch-banner');
+          if (banner) banner.style.display = 'none';
+          return;
+        }
+
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        var secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        var parts = [];
+        if (days > 0) parts.push(days + 'd');
+        parts.push(pad(hours) + 'h');
+        parts.push(pad(mins) + 'm');
+        parts.push(pad(secs) + 's');
+        el.textContent = parts.join(' ');
+      }
+
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+      update();
+      setInterval(update, 1000);
+    })();
+  </script>
+  <% } %>
+
+</body>
+</html>
